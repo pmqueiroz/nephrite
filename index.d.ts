@@ -4,9 +4,47 @@ export declare class Nephrite {
   constructor(config: Config)
   getConfig(): Config
   build(): void
+  registerTransform(transform: Transform): void
+  registerTransformGroup(transformGroup: TransformGroup): void
+  registerParser(parser: Parser): void
+  registerAction(action: Action): void
+}
+
+export interface Action {
+  name: string
+  do: () => void
+  undo: () => void
 }
 
 export interface Config {
   source: Array<string>
   cwd?: string
+}
+
+export interface Parser {
+  name: string
+  pattern: string
+  transforms: Array<string>
+}
+
+export interface Token {
+  type: string
+  value: string
+}
+
+export interface Transform {
+  name: string
+  kind: TransformKind
+  filter: (arg: Token) => boolean
+  transform: (arg: Token) => string
+}
+
+export interface TransformGroup {
+  name: string
+  transforms: Array<string>
+}
+
+export declare const enum TransformKind {
+  Attribute = 'Attribute',
+  Value = 'Value'
 }
