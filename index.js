@@ -572,4 +572,5 @@ if (!nativeBinding) {
 }
 
 module.exports = nativeBinding
+module.exports.Nephrite = nativeBinding.Nephrite
 module.exports.plus100 = nativeBinding.plus100

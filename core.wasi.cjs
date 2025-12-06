@@ -108,4 +108,5 @@ const { instance: __napiInstance, module: __wasiModule, napiModule: __napiModule
   },
 })
 module.exports = __napiModule.exports
+module.exports.Nephrite = __napiModule.exports.Nephrite
 module.exports.plus100 = __napiModule.exports.plus100

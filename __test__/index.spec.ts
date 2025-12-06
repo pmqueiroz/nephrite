@@ -1,10 +1,23 @@
-import { describe, expect, test } from "vitest";
+import { describe, expect, it } from 'vitest';
 
-import { plus100 } from "../index";
+import { type Config, Nephrite } from '../index';
 
-describe("core", () => {
-  test("sync function from native code", () => {
-    const fixture = 42;
-    expect(plus100(fixture)).toBe(fixture + 100);
+const defaultConfig = {
+  source: ['src/tokens/**/*.json'],
+} satisfies Config;
+
+describe('Nephrite', () => {
+  describe('getConfig', () => {
+    it('should be a function', () => {
+      expect(Nephrite.prototype.getConfig).toBeInstanceOf(Function);
+    });
+
+    it('should return config on getConfig', () => {
+      const nephrite = new Nephrite(defaultConfig);
+
+      expect(nephrite.getConfig()).toEqual(
+        expect.objectContaining(defaultConfig),
+      );
+    });
   });
 });
