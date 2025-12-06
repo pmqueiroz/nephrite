@@ -1,0 +1,16 @@
+pre-push:
+  jobs:
+    - name: packages audit
+      tags:
+        - frontend
+        - security
+      run: pnpm audit
+
+pre-commit:
+  parallel: true
+  jobs:
+    - run: oxlint --fix {staged_files}
+      glob: "*.{js,ts,jsx,tsx}"
+
+    - run: taplo format {staged_files}
+      glob: "*.toml"
