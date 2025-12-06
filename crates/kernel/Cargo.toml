@@ -1,0 +1,5 @@
+[package]
+name          = "kernel"
+license       = "MIT"
+repository    = "https://github.com/pmqueiroz/nephrite.git"
+version       = "0.1.0"

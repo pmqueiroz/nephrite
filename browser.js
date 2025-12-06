@@ -1,1 +1,1 @@
-export * from "@nephrite/core-wasm32-wasi";
+export * from '@nephrite/core-wasm32-wasi'
