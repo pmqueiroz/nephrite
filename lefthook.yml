@@ -11,6 +11,8 @@ pre-commit:
   jobs:
     - run: biome check --write {staged_files}
       glob: "*.{js,ts,jsx,tsx}"
+      stage_fixed: true
 
     - run: taplo format {staged_files}
       glob: "*.toml"
+      stage_fixed: true
