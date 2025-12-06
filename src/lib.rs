@@ -1,16 +1,13 @@
 #![deny(clippy::all)]
-use kernel::_plus_100;
 use napi_derive::napi;
 
-#[napi]
-pub fn plus_100(input: u32) -> u32 {
-  _plus_100(input)
-}
+mod get_tokens;
 
 #[napi(object)]
 #[derive(Clone)]
 pub struct Config {
   pub source: Vec<String>,
+  pub cwd: Option<String>,
 }
 
 #[napi]
@@ -28,5 +25,22 @@ impl Nephrite {
   #[napi]
   pub fn get_config(&self) -> Config {
     self.config.clone()
+  }
+
+  #[napi]
+  pub fn build(&self) {
+    let tokens = self.fetch_tokens();
+
+    println!("{:#?}", tokens);
+  }
+
+  fn fetch_tokens(&self) -> Vec<String> {
+    let cwd = match &self.config.cwd {
+      Some(path) => std::path::PathBuf::from(path),
+      None => std::env::current_dir().unwrap(),
+    };
+
+    let path = get_tokens::get_tokens_path(&cwd, self.config.source.clone());
+    get_tokens::get_tokens(path)
   }
 }

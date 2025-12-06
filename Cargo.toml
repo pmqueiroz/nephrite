@@ -12,6 +12,8 @@ crate-type = ["cdylib"]
 napi        = "3.0.0"
 napi-derive = "3.0.0"
 kernel = { path = "crates/kernel" }
+rayon = "1.11.0"
+globwalk = "0.9.1"
 
 [build-dependencies]
 napi-build = "2"

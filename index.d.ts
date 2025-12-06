@@ -3,10 +3,10 @@
 export declare class Nephrite {
   constructor(config: Config)
   getConfig(): Config
+  build(): void
 }
 
 export interface Config {
   source: Array<string>
+  cwd?: string
 }
-
-export declare function plus100(input: number): number

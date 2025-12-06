@@ -57,4 +57,3 @@ const {
 })
 export default __napiModule.exports
 export const Nephrite = __napiModule.exports.Nephrite
-export const plus100 = __napiModule.exports.plus100
