@@ -9,7 +9,7 @@ pre-push:
 pre-commit:
   parallel: true
   jobs:
-    - run: oxlint --fix {staged_files}
+    - run: biome format --write {staged_files}
       glob: "*.{js,ts,jsx,tsx}"
 
     - run: taplo format {staged_files}
