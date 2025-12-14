@@ -9,12 +9,23 @@ export interface Action {
 export interface Parser {
   name: string
   pattern: string
-  transforms: Array<string>
+  parser: (arg: TokenFile) => string
+}
+
+export interface Platform {
+  name: string
+  transformGroup: string
+  buildPath: string
 }
 
 export interface Token {
   type: string
   value: string
+}
+
+export interface TokenFile {
+  path: string
+  content: string
 }
 
 export interface Transform {
@@ -36,7 +47,7 @@ export declare const enum TransformKind {
 export declare class Nephrite {
   constructor(config: Config)
   getConfig(): Config
-  build(): void
+  build(platformName: string): void
   registerTransform(transform: Transform): void
   registerTransformGroup(transformGroup: TransformGroup): void
   registerParser(parser: Parser): void
@@ -46,4 +57,5 @@ export declare class Nephrite {
 export interface Config {
   source: Array<string>
   cwd?: string
+  platforms: Array<Platform>
 }

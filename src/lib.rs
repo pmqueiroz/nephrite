@@ -1,6 +1,7 @@
 #![deny(clippy::all)]
-use bindings::{action, parser, transform};
-use kernel::{get_tokens, get_tokens_path};
+use bindings::{action, parser, platform, transform};
+use kernel::{get_tokens_files, get_tokens_files_paths};
+use napi::bindgen_prelude::Env;
 use napi_derive::napi;
 use std::collections::HashMap;
 
@@ -9,8 +10,9 @@ pub struct Nephrite {
   config: Config,
   transforms: HashMap<String, transform::Transform>,
   transform_groups: HashMap<String, transform::TransformGroup>,
-  parsers: HashMap<String, parser::Parser>,
+  parsers: Vec<parser::RegisteredParser>,
   actions: HashMap<String, action::Action>,
+  platforms: HashMap<String, platform::Platform>,
 }
 
 #[napi(object)]
@@ -18,18 +20,26 @@ pub struct Nephrite {
 pub struct Config {
   pub source: Vec<String>,
   pub cwd: Option<String>,
+  pub platforms: Vec<platform::Platform>,
 }
 
 #[napi]
 impl Nephrite {
   #[napi(constructor)]
   pub fn new(config: Config) -> Self {
+    let mut platforms = HashMap::new();
+
+    for platform in &config.platforms {
+      platforms.insert(platform.name.clone(), platform.clone());
+    }
+
     Self {
       config,
       transforms: HashMap::new(),
       transform_groups: HashMap::new(),
-      parsers: HashMap::new(),
+      parsers: Vec::new(),
       actions: HashMap::new(),
+      platforms,
     }
   }
 
@@ -39,10 +49,20 @@ impl Nephrite {
   }
 
   #[napi]
-  pub fn build(&self) {
-    let tokens = self.fetch_tokens();
+  pub fn build(&self, platform_name: String, env: &Env) {
+    println!("Building for platform: {}", platform_name);
+    let tokens_files = self.fetch_tokens_files();
+    let parsed_files = kernel::parse_files(tokens_files, &self.parsers, env);
+    for parsed_file in &parsed_files {
+      println!("Token file path: {:#?}", parsed_file);
+    }
 
-    println!("{:#?}", tokens);
+    let platform = self.platforms.get(&platform_name);
+
+    match platform {
+      Some(p) => println!("Using transform_group: {}", p.transform_group),
+      None => println!("Platform '{}' not found", platform_name),
+    }
   }
 
   #[napi]
@@ -64,9 +84,15 @@ impl Nephrite {
   }
 
   #[napi]
-  pub fn register_parser(&mut self, parser: parser::Parser) {
+  pub fn register_parser<'parser>(&mut self, parser: parser::Parser) {
     let name = parser.name.clone();
-    self.parsers.insert(parser.name.clone(), parser);
+    let registered_parser = parser::RegisteredParser {
+      name: parser.name,
+      pattern: parser.pattern,
+      parser: parser.parser.create_ref().unwrap(),
+    };
+    self.parsers.push(registered_parser);
+
     println!("Registered parser: {}", name)
   }
 
@@ -77,13 +103,13 @@ impl Nephrite {
     println!("Registered action: {}", name)
   }
 
-  fn fetch_tokens(&self) -> Vec<String> {
+  fn fetch_tokens_files(&self) -> Vec<bindings::parser::TokenFile> {
     let cwd = match &self.config.cwd {
       Some(path) => std::path::PathBuf::from(path),
       None => std::env::current_dir().unwrap(),
     };
 
-    let path = get_tokens_path(&cwd, self.config.source.clone());
-    get_tokens(path)
+    let path = get_tokens_files_paths(&cwd, self.config.source.clone());
+    get_tokens_files(path)
   }
 }

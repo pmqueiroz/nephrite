@@ -16,6 +16,8 @@ bindings       = { path = "crates/bindings" }
 napi        = "3.0.0"
 napi-derive = "3.0.0"
 rayon       = "1.11.0"
+serde = { version = "1.0.228", features = ["derive"] }
+serde_json = "1.0.145"
 
 [build-dependencies]
 napi-build = "2"

@@ -1,12 +1,16 @@
 extern crate napi;
 extern crate napi_derive;
+extern crate serde;
+extern crate serde_json;
 
 pub mod action;
 pub mod parser;
+pub mod platform;
 pub mod token;
 pub mod transform;
 
 pub use action::Action;
 pub use parser::Parser;
+pub use platform::Platform;
 pub use token::Token;
 pub use transform::{Transform, TransformGroup};

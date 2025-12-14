@@ -9,6 +9,11 @@ const defaultConfig = () =>
   ({
     source: ['src/tokens/**/*.json'],
     cwd: tempDir,
+    platforms: [{
+    name: 'web',
+    buildPath: 'src/dist',
+    transformGroup: 'web-group',
+    }]
   }) satisfies Config;
 
 describe('Nephrite', () => {
@@ -74,14 +79,16 @@ describe('Nephrite', () => {
       });
 
       nephrite.registerTransformGroup({
-        name: 'web',
+        name: 'web-group',
         transforms: ['margin/css/shorthand'],
       });
 
       nephrite.registerParser({
         name: 'json',
-        pattern: '/.json$/',
-        transforms: ['margin/css/shorthand'],
+        pattern: '*.json',
+        parser: ({ content }) => {
+          return content
+        },
       });
 
       nephrite.registerAction({
@@ -94,7 +101,7 @@ describe('Nephrite', () => {
         },
       });
 
-      nephrite.build();
+      nephrite.build('web');
     });
   });
 });
