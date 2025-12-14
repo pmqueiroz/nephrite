@@ -13,6 +13,7 @@ globwalk    = "0.9.1"
 utils      = { path = "crates/utils" }
 kernel       = { path = "crates/kernel" }
 bindings       = { path = "crates/bindings" }
+log = { path = "crates/log" }
 napi        = "3.0.0"
 napi-derive = "3.0.0"
 rayon       = "1.11.0"

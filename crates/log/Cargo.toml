@@ -1,0 +1,11 @@
+[package]
+license    = "MIT"
+name       = "log"
+repository = "https://github.com/pmqueiroz/nephrite.git"
+version    = "0.1.0"
+
+[dependencies]
+chromalog = "0.0.2"
+log = "0.4.29"
+colored = "3.0.0"
+chrono = "0.4.42"

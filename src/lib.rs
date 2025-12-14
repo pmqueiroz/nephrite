@@ -1,6 +1,7 @@
 #![deny(clippy::all)]
 use bindings::{action, parser, platform, transform};
 use kernel::{get_tokens_files, get_tokens_files_paths};
+use log::Logger;
 use napi::bindgen_prelude::Env;
 use napi_derive::napi;
 use std::collections::HashMap;
@@ -27,6 +28,8 @@ pub struct Config {
 impl Nephrite {
   #[napi(constructor)]
   pub fn new(config: Config) -> Self {
+    Logger::init();
+
     let mut platforms = HashMap::new();
 
     for platform in &config.platforms {
@@ -50,18 +53,18 @@ impl Nephrite {
 
   #[napi]
   pub fn build(&self, platform_name: String, env: &Env) {
-    println!("Building for platform: {}", platform_name);
+    Logger::info(&format!("Building for platform: {}", platform_name));
     let tokens_files = self.fetch_tokens_files();
     let parsed_files = kernel::parse_files(tokens_files, &self.parsers, env);
     for parsed_file in &parsed_files {
-      println!("Token file path: {:#?}", parsed_file);
+      Logger::debug(&format!("Token file path: {:#?}", parsed_file));
     }
 
     let platform = self.platforms.get(&platform_name);
 
     match platform {
-      Some(p) => println!("Using transform_group: {}", p.transform_group),
-      None => println!("Platform '{}' not found", platform_name),
+      Some(p) => Logger::info(&format!("Using transform_group: {}", p.transform_group)),
+      None => Logger::warn(&format!("Platform '{}' not found", platform_name)),
     }
   }
 
@@ -70,7 +73,7 @@ impl Nephrite {
     let name = transform.name.clone();
     self.transforms.insert(transform.name.clone(), transform);
 
-    println!("Registered transform: {}", name)
+    Logger::info(&format!("Registered transform: {}", name));
   }
 
   #[napi]
@@ -80,7 +83,7 @@ impl Nephrite {
       .transform_groups
       .insert(transform_group.name.clone(), transform_group);
 
-    println!("Registered transform group: {}", name)
+    Logger::info(&format!("Registered transform group: {}", name));
   }
 
   #[napi]
@@ -93,14 +96,14 @@ impl Nephrite {
     };
     self.parsers.push(registered_parser);
 
-    println!("Registered parser: {}", name)
+    Logger::info(&format!("Registered parser: {}", name));
   }
 
   #[napi]
   pub fn register_action(&mut self, action: action::Action) {
     let name = action.name.clone();
     self.actions.insert(action.name.clone(), action);
-    println!("Registered action: {}", name)
+    Logger::info(&format!("Registered action: {}", name));
   }
 
   fn fetch_tokens_files(&self) -> Vec<bindings::parser::TokenFile> {
