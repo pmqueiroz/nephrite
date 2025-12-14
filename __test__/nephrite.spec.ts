@@ -9,11 +9,13 @@ const defaultConfig = () =>
   ({
     source: ['src/tokens/**/*.json'],
     cwd: tempDir,
-    platforms: [{
-    name: 'web',
-    buildPath: 'src/dist',
-    transformGroup: 'web-group',
-    }]
+    platforms: [
+      {
+        name: 'web',
+        buildPath: 'src/dist',
+        transformGroup: 'web-group',
+      },
+    ],
   }) satisfies Config;
 
 describe('Nephrite', () => {
@@ -87,7 +89,7 @@ describe('Nephrite', () => {
         name: 'json',
         pattern: '*.json',
         parser: ({ content }) => {
-          return content
+          return content;
         },
       });
 
