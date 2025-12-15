@@ -1,4 +1,5 @@
 extern crate bindings;
+extern crate log;
 extern crate napi;
 extern crate rayon;
 extern crate utils;

@@ -17,7 +17,7 @@ export async function setupTokensDir() {
               value: '#007bff',
               type: 'color',
             }
-          },
+          }
         },
         button: {
           primary: {
