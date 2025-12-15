@@ -13,16 +13,23 @@ export async function setupTokensDir() {
       {
         theme: {
           color: {
-            primary: {
+            background: {
+              value: '{global.color.blue}',
+            }
+          }
+        },
+        global: {
+          color: {
+            blue: {
               value: '#007bff',
               type: 'color',
             }
-          }
+          },
         },
         button: {
           primary: {
             background: {
-              value: '{theme.color.primary}',
+              value: '{theme.color.background}',
             },
             color: {
               value: '#ffffff',

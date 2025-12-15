@@ -41,19 +41,33 @@ impl TokensBucket {
     resolved_tokens: &mut HashMap<String, Token>,
     tokens_with_references: &mut HashMap<String, Token>,
   ) {
-    let keys: Vec<String> = tokens_with_references.keys().cloned().collect();
+    while !tokens_with_references.is_empty() {
+      let keys: Vec<String> = tokens_with_references.keys().cloned().collect();
+      let initial_count = tokens_with_references.len();
 
-    for key in keys {
-      if let Some(token) = tokens_with_references.get(&key) {
-        if let Some(resolved_value) = token_ref::resolve_value_ref(&token.value, &resolved_tokens) {
-          let resolved_token = Token {
-            path: token.path.clone(),
-            original_value: token.original_value.clone(),
-            value: resolved_value,
-          };
-          resolved_tokens.insert(key.clone(), resolved_token);
-          tokens_with_references.remove(&key);
+      for key in keys {
+        if let Some(token) = tokens_with_references.get(&key) {
+          if let Some(resolved_value) = token_ref::resolve_value_ref(&token.value, &resolved_tokens)
+          {
+            let resolved_token = Token {
+              path: token.path.clone(),
+              original_value: token.original_value.clone(),
+              value: resolved_value,
+            };
+            resolved_tokens.insert(key.clone(), resolved_token);
+            tokens_with_references.remove(&key);
+          }
         }
+      }
+
+      if tokens_with_references.len() == initial_count {
+        for (path, _) in tokens_with_references {
+          Logger::error(&format!(
+            "Referenced token does not exist for token at path '{}'",
+            path
+          ));
+        }
+        std::process::exit(1);
       }
     }
   }
