@@ -53,35 +53,55 @@ impl Nephrite {
     self.config.clone()
   }
 
-  #[napi]
-  pub fn build(&self, platform_name: String, env: &Env) {
-    Logger::info(&format!("Building for platform: {}", platform_name));
+  fn generate_bucket(&self, env: &Env) -> TokensBucket {
     let tokens_files = self.fetch_tokens_files();
     let parsed_files = kernel::parse_files(tokens_files, &self.parsers, env);
+    TokensBucket::new(parsed_files)
+  }
 
-    let tokens_bucket = TokensBucket::new(parsed_files);
+  #[napi]
+  pub fn build_platform(&self, platform_name: String, env: &Env) {
+    let tokens_bucket = self.generate_bucket(env);
 
-    tokens_bucket.print_tokens();
+    self.build_single_platform(&platform_name, &tokens_bucket);
+  }
 
-    let platform = self.platforms.get(&platform_name);
+  #[napi]
+  pub fn build_all(&self, env: &Env) {
+    Logger::info("Building all platforms in parallel");
+
+    let tokens_bucket = self.generate_bucket(env);
+
+    let platform_names: Vec<String> = self.platforms.keys().cloned().collect();
+
+    platform_names.iter().for_each(|platform_name| {
+      self.build_single_platform(&platform_name, &tokens_bucket);
+    });
+
+    Logger::info("All platforms built successfully");
+  }
+
+  fn build_single_platform(&self, platform_name: &str, tokens_bucket: &TokensBucket) {
+    let platform = self.platforms.get(platform_name);
 
     let transform_group = match platform {
       Some(p) => self.transform_groups.get(&p.transform_group),
       None => {
         Logger::error(&format!("Platform '{}' not found", platform_name));
-        std::process::exit(1);
+        return;
       }
     };
 
     match transform_group {
       Some(t) => {
         let collection = kernel::resolve_transformers(t.clone(), self.transforms.clone());
-
-        kernel::build(platform.unwrap().clone(), collection)
+        kernel::build(platform.unwrap().clone(), collection, tokens_bucket);
       }
       None => {
-        Logger::error(&format!("Platform '{}' not found", platform_name));
-        std::process::exit(1);
+        Logger::error(&format!(
+          "Transform group for platform '{}' not found",
+          platform_name
+        ));
       }
     }
   }

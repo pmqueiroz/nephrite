@@ -43,7 +43,7 @@ describe('Nephrite', () => {
 
   describe('build', () => {
     it('should be a function', () => {
-      expect(Nephrite.prototype.build).toBeInstanceOf(Function);
+      expect(Nephrite.prototype.buildAll).toBeInstanceOf(Function);
     });
 
     it('should [wip]', async () => {
@@ -103,7 +103,7 @@ describe('Nephrite', () => {
         },
       });
 
-      nephrite.build('web');
+      nephrite.buildAll();
     });
   });
 });

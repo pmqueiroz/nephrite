@@ -47,7 +47,8 @@ export declare const enum TransformKind {
 export declare class Nephrite {
   constructor(config: Config)
   getConfig(): Config
-  build(platformName: string): void
+  buildPlatform(platformName: string): void
+  buildAll(): void
   registerTransform(transform: Transform): void
   registerTransformGroup(transformGroup: TransformGroup): void
   registerParser(parser: Parser): void

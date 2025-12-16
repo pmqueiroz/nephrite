@@ -115,4 +115,8 @@ impl TokensBucket {
       }
     }
   }
+
+  pub fn len(&self) -> usize {
+    self.tokens.len()
+  }
 }
