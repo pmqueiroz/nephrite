@@ -8,9 +8,11 @@ pub mod parser;
 pub mod platform;
 pub mod token;
 pub mod transform;
+pub mod types;
 
 pub use action::Action;
 pub use parser::Parser;
 pub use platform::Platform;
 pub use token::Token;
 pub use transform::{Transform, TransformGroup};
+pub use types::*;

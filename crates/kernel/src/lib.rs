@@ -66,5 +66,7 @@ pub fn parse_files(
 }
 
 mod bucket;
+mod build;
 
 pub use bucket::{Token, TokensBucket};
+pub use build::{build, resolve_transformers};

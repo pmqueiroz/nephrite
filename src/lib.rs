@@ -1,5 +1,7 @@
 #![deny(clippy::all)]
-use bindings::{action, parser, platform, transform};
+use bindings::{
+  action, parser, platform, transform, Actions, Parsers, Platforms, TransformGroups, Transforms,
+};
 use kernel::{get_tokens_files, get_tokens_files_paths, TokensBucket};
 use log::Logger;
 use napi::bindgen_prelude::Env;
@@ -9,11 +11,11 @@ use std::collections::HashMap;
 #[napi]
 pub struct Nephrite {
   config: Config,
-  transforms: HashMap<String, transform::Transform>,
-  transform_groups: HashMap<String, transform::TransformGroup>,
-  parsers: Vec<parser::RegisteredParser>,
-  actions: HashMap<String, action::Action>,
-  platforms: HashMap<String, platform::Platform>,
+  transforms: Transforms,
+  transform_groups: TransformGroups,
+  parsers: Parsers,
+  actions: Actions,
+  platforms: Platforms,
 }
 
 #[napi(object)]
@@ -63,9 +65,24 @@ impl Nephrite {
 
     let platform = self.platforms.get(&platform_name);
 
-    match platform {
-      Some(p) => Logger::info(&format!("Using transform_group: {}", p.transform_group)),
-      None => Logger::warn(&format!("Platform '{}' not found", platform_name)),
+    let transform_group = match platform {
+      Some(p) => self.transform_groups.get(&p.transform_group),
+      None => {
+        Logger::error(&format!("Platform '{}' not found", platform_name));
+        std::process::exit(1);
+      }
+    };
+
+    match transform_group {
+      Some(t) => {
+        let collection = kernel::resolve_transformers(t.clone(), self.transforms.clone());
+
+        kernel::build(platform.unwrap().clone(), collection)
+      }
+      None => {
+        Logger::error(&format!("Platform '{}' not found", platform_name));
+        std::process::exit(1);
+      }
     }
   }
 
