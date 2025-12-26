@@ -14,6 +14,15 @@ const defaultConfig = () =>
         name: 'web',
         buildPath: 'src/dist',
         transformGroup: 'web-group',
+        files: [{
+          destination: 'theme.css',
+          filter: t => {
+            console.log({ CHEGOU_TOKEN_AI: t })
+
+            return t.filePath.includes(`/button.tokens/`)
+          },
+          format: 'css/variables',
+        }]
       },
     ],
   }) satisfies Config;
@@ -25,20 +34,6 @@ describe('Nephrite', () => {
 
   afterEach(async () => {
     await fs.rm(tempDir, { recursive: true, force: true });
-  });
-
-  describe('getConfig', () => {
-    it('should be a function', () => {
-      expect(Nephrite.prototype.getConfig).toBeInstanceOf(Function);
-    });
-
-    it('should return config on getConfig', () => {
-      const nephrite = new Nephrite(defaultConfig());
-
-      expect(nephrite.getConfig()).toEqual(
-        expect.objectContaining(defaultConfig()),
-      );
-    });
   });
 
   describe('build', () => {

@@ -1,3 +1,3 @@
-use bindings::transform::Transform;
+use bindings::transform::RegisteredTransform;
 
-pub type TransformersCollection = Vec<Transform>;
+pub type TransformersCollection = Vec<RegisteredTransform>;

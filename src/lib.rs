@@ -9,27 +9,27 @@ use napi_derive::napi;
 use std::collections::HashMap;
 
 #[napi]
-pub struct Nephrite {
-  config: Config,
+pub struct Nephrite<'env> {
+  config: Config<'env>,
   transforms: Transforms,
   transform_groups: TransformGroups,
   parsers: Parsers,
   actions: Actions,
-  platforms: Platforms,
+  platforms: Platforms<'env>,
 }
 
 #[napi(object)]
 #[derive(Clone)]
-pub struct Config {
+pub struct Config<'platform> {
   pub source: Vec<String>,
   pub cwd: Option<String>,
-  pub platforms: Vec<platform::Platform>,
+  pub platforms: Vec<platform::Platform<'platform>>,
 }
 
 #[napi]
-impl Nephrite {
+impl<'env> Nephrite<'env> {
   #[napi(constructor)]
-  pub fn new(config: Config) -> Self {
+  pub fn new(config: Config<'env>) -> Self {
     Logger::init();
 
     let mut platforms = HashMap::new();
@@ -49,7 +49,7 @@ impl Nephrite {
   }
 
   #[napi]
-  pub fn get_config(&self) -> Config {
+  pub fn get_config(&self) -> Config<'_> {
     self.config.clone()
   }
 
@@ -63,7 +63,7 @@ impl Nephrite {
   pub fn build_platform(&self, platform_name: String, env: &Env) {
     let tokens_bucket = self.generate_bucket(env);
 
-    self.build_single_platform(&platform_name, &tokens_bucket);
+    self.build_single_platform(&platform_name, &tokens_bucket, env);
   }
 
   #[napi]
@@ -75,13 +75,13 @@ impl Nephrite {
     let platform_names: Vec<String> = self.platforms.keys().cloned().collect();
 
     platform_names.iter().for_each(|platform_name| {
-      self.build_single_platform(&platform_name, &tokens_bucket);
+      self.build_single_platform(&platform_name, &tokens_bucket, env);
     });
 
     Logger::info("All platforms built successfully");
   }
 
-  fn build_single_platform(&self, platform_name: &str, tokens_bucket: &TokensBucket) {
+  fn build_single_platform(&self, platform_name: &str, tokens_bucket: &TokensBucket, env: &Env) {
     let platform = self.platforms.get(platform_name);
 
     let transform_group = match platform {
@@ -95,7 +95,7 @@ impl Nephrite {
     match transform_group {
       Some(t) => {
         let collection = kernel::resolve_transformers(t.clone(), self.transforms.clone());
-        kernel::build(platform.unwrap().clone(), collection, tokens_bucket);
+        kernel::build(platform.unwrap().clone(), collection, tokens_bucket, env);
       }
       None => {
         Logger::error(&format!(
@@ -130,7 +130,16 @@ impl Nephrite {
     let registered_parser = parser::RegisteredParser {
       name: parser.name,
       pattern: parser.pattern,
-      parser: parser.parser.create_ref().unwrap(),
+      parser: match parser.parser.create_ref() {
+        Ok(parser) => parser,
+        Err(e) => {
+          Logger::error(&format!(
+            "Failed to create parser reference for parser '{}': {}",
+            name, e
+          ));
+          std::process::exit(1);
+        }
+      },
     };
     self.parsers.push(registered_parser);
 

@@ -16,6 +16,19 @@ export interface Platform {
   name: string
   transformGroup: string
   buildPath: string
+  files: Array<PlatformFile>
+}
+
+export interface PlatformFile {
+  destination: string
+  filter?: (arg: any) => boolean
+  format: string
+}
+
+export interface ResolvedToken {
+  path: string
+  originalValue: Token
+  value: any
 }
 
 export interface Token {
@@ -31,8 +44,8 @@ export interface TokenFile {
 export interface Transform {
   name: string
   kind: TransformKind
-  filter: (arg: Token) => boolean
-  transform: (arg: Token) => string
+  filter: ((token: ResolvedToken) => boolean)
+  transform: ((token: ResolvedToken) => string)
 }
 
 export interface TransformGroup {
