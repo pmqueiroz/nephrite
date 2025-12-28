@@ -16,6 +16,7 @@ pub struct ResolvedToken {
   pub value: serde_json::Value,
 }
 
+#[napi(object)]
 #[derive(Debug, Clone)]
 pub struct TransformedToken {
   pub original: ResolvedToken,

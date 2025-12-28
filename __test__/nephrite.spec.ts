@@ -1,6 +1,6 @@
 import fs from 'node:fs/promises';
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
-import { type Config, Nephrite, TransformKind } from '../index';
+import { Nephrite, type NephriteConfig, TransformKind } from '../index';
 import { setupTokensDir } from './utils/setup-tokens-dir';
 
 let tempDir: string;
@@ -14,18 +14,20 @@ const defaultConfig = () =>
         name: 'web',
         buildPath: 'src/dist',
         transformGroup: 'web-group',
-        files: [{
-          destination: 'theme.css',
-          filter: t => {
-            console.log({ CHEGOU_TOKEN_AI: t })
+        files: [
+          {
+            destination: 'theme.css',
+            filter: (t) => {
+              console.log({ CHEGOU_TOKEN_AI: t });
 
-            return t.filePath.includes(`/button.tokens/`)
+              return t.filePath.includes(`/button.tokens/`);
+            },
+            format: 'css/variables',
           },
-          format: 'css/variables',
-        }]
+        ],
       },
     ],
-  }) satisfies Config;
+  }) satisfies NephriteConfig;
 
 describe('Nephrite', () => {
   beforeEach(async () => {
@@ -44,6 +46,19 @@ describe('Nephrite', () => {
     it('should [wip]', async () => {
       const nephrite = new Nephrite(defaultConfig());
 
+      nephrite.registerFormat({
+        name: 'css/variables',
+        format: ({ dictionary }) => {
+
+          return dictionary.allTokens
+            .map(
+              (token) =>
+                `--${token.original.path}: ${token.value};`
+            )
+            .join('\n');
+        }
+      })
+
       nephrite.registerTransform({
         name: 'margin/css/shorthand',
         kind: TransformKind.Value,
@@ -60,7 +75,14 @@ describe('Nephrite', () => {
             left,
             vertical,
             horizontal,
-          }: { top?: string; right?: string; bottom?: string; left?: string; vertical?: string; horizontal?: string }) => {
+          }: {
+            top?: string;
+            right?: string;
+            bottom?: string;
+            left?: string;
+            vertical?: string;
+            horizontal?: string;
+          }) => {
             if (vertical && horizontal)
               return `${vertical} ${horizontal}`.trim();
 

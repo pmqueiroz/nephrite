@@ -6,6 +6,19 @@ export interface Action {
   undo: () => void
 }
 
+export interface Dictionary {
+  allTokens: Array<TransformedToken>
+}
+
+export interface Format {
+  name: string
+  format: (arg: FormatArguments) => string
+}
+
+export interface FormatArguments {
+  dictionary: Dictionary
+}
+
 export interface Parser {
   name: string
   pattern: string
@@ -48,6 +61,11 @@ export interface Transform {
   transform: (token: ResolvedToken) => string
 }
 
+export interface TransformedToken {
+  original: ResolvedToken
+  value: string
+}
+
 export interface TransformGroup {
   name: string
   transforms: Array<string>
@@ -66,6 +84,7 @@ export declare class Nephrite {
   registerTransformGroup(transformGroup: TransformGroup): void
   registerParser(parser: Parser): void
   registerAction(action: Action): void
+  registerFormat(format: Format): void
 }
 
 export interface NephriteConfig {
