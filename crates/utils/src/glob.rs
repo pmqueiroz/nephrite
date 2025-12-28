@@ -1,14 +1,13 @@
 extern crate globwalk;
-use std::path::PathBuf;
+use std::path::Path;
 
-pub fn glob(cwd: &PathBuf, patterns: Vec<String>) -> Vec<String> {
+pub fn glob(cwd: &Path, patterns: Vec<String>) -> Vec<String> {
   let mut paths: Vec<String> = Vec::new();
 
   let glob_paths: Vec<globwalk::DirEntry> =
-    globwalk::GlobWalkerBuilder::from_patterns(cwd.clone(), &patterns)
+    globwalk::GlobWalkerBuilder::from_patterns(cwd, &patterns)
       .build()
       .unwrap()
-      .into_iter()
       .filter_map(Result::ok)
       .collect();
 

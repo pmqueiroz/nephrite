@@ -8,7 +8,7 @@ use napi::bindgen_prelude::Env;
 use rayon::prelude::{IntoParallelRefIterator, ParallelIterator};
 use utils::read_file;
 
-pub fn get_tokens_files_paths(cwd: &std::path::PathBuf, source: Vec<String>) -> Vec<String> {
+pub fn get_tokens_files_paths(cwd: &std::path::Path, source: Vec<String>) -> Vec<String> {
   utils::glob(cwd, source)
 }
 

@@ -41,7 +41,7 @@ impl TokensBucket {
 
       for key in keys {
         if let Some(token) = tokens_with_references.get(&key) {
-          if let Some(resolved_value) = token_ref::resolve_value_ref(&token.value, &resolved_tokens)
+          if let Some(resolved_value) = token_ref::resolve_value_ref(&token.value, resolved_tokens)
           {
             let resolved_token = ResolvedToken {
               path: token.path.clone(),
@@ -55,7 +55,7 @@ impl TokensBucket {
       }
 
       if tokens_with_references.len() == initial_count {
-        for (path, _) in tokens_with_references {
+        for path in tokens_with_references.keys() {
           Logger::error(&format!(
             "Referenced token does not exist for token at path '{}'",
             path
@@ -112,6 +112,10 @@ impl TokensBucket {
 
   pub fn len(&self) -> usize {
     self.tokens.len()
+  }
+
+  pub fn is_empty(&self) -> bool {
+    self.tokens.is_empty()
   }
 
   pub fn iter(&self) -> impl Iterator<Item = &ResolvedToken> {

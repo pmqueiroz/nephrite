@@ -1,4 +1,5 @@
 [package]
+edition    = "2021"
 license    = "MIT"
 name       = "log"
 repository = "https://github.com/pmqueiroz/nephrite.git"

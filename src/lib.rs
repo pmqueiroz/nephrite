@@ -78,7 +78,7 @@ impl<'env> Nephrite<'env> {
     let platform_names: Vec<String> = self.platforms.keys().cloned().collect();
 
     platform_names.iter().for_each(|platform_name| {
-      self.build_single_platform(&platform_name, &tokens_bucket, env);
+      self.build_single_platform(platform_name, &tokens_bucket, env);
     });
 
     Logger::info("All platforms built successfully");
@@ -160,7 +160,7 @@ impl<'env> Nephrite<'env> {
   }
 
   #[napi]
-  pub fn register_parser<'parser>(&mut self, parser: parser::Parser) {
+  pub fn register_parser(&mut self, parser: parser::Parser) {
     let name = parser.name.clone();
     let registered_parser = parser::RegisteredParser {
       name: parser.name,
