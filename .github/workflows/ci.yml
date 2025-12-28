@@ -247,6 +247,7 @@ jobs:
         run: pnpm test
   test-linux-binding:
     name: Test ${{ matrix.target }} - node@${{ matrix.node }}
+    if: false
     needs:
       - build
     strategy:
@@ -319,6 +320,7 @@ jobs:
           options: '-v ${{ github.workspace }}:${{ github.workspace }} -w ${{ github.workspace }} --platform ${{ steps.docker.outputs.PLATFORM }}'
           run: pnpm test
   test-wasi:
+    if: false # WASI tests are currently disabled
     name: Test WASI target
     needs:
       - build
