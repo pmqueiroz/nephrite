@@ -4,7 +4,7 @@ use bindings::{
   action, parser, platform, transform, Actions, Format, Parsers, Platforms, RegisteredFormat,
   RegisteredFormats, RegisteredTransforms, TransformGroups,
 };
-use kernel::{get_tokens_files, get_tokens_files_paths, TokensBucket};
+use kernel::{get_tokens_files, get_tokens_files_paths, Config, TokensBucket};
 use log::Logger;
 use log_level::NephritLogLevel;
 use napi::bindgen_prelude::Env;
@@ -13,7 +13,7 @@ use std::collections::HashMap;
 
 #[napi]
 pub struct Nephrit<'env> {
-  config: NephriteConfig<'env>,
+  config: Config<'env>,
   transforms: RegisteredTransforms,
   transform_groups: TransformGroups,
   parsers: Parsers,
@@ -46,7 +46,11 @@ impl<'env> Nephrit<'env> {
     }
 
     Self {
-      config,
+      config: Config {
+        source: config.source,
+        cwd: config.cwd.map(|p| std::path::PathBuf::from(p)),
+        platforms: config.platforms,
+      },
       transforms: HashMap::new(),
       transform_groups: HashMap::new(),
       parsers: Vec::new(),
@@ -54,11 +58,6 @@ impl<'env> Nephrit<'env> {
       formats: HashMap::new(),
       platforms,
     }
-  }
-
-  #[napi]
-  pub fn get_config(&self) -> NephriteConfig<'_> {
-    self.config.clone()
   }
 
   fn generate_bucket(&self, env: &Env) -> TokensBucket {
@@ -117,6 +116,7 @@ impl<'env> Nephrit<'env> {
       collection,
       tokens_bucket,
       &self.formats,
+      &self.config,
     );
   }
 

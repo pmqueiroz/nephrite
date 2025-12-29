@@ -1,4 +1,5 @@
 import fs from 'node:fs/promises';
+import path from 'node:path';
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import {
   Nephrit,
@@ -6,6 +7,7 @@ import {
   NephritLogLevel,
   TransformKind,
 } from '../index';
+import { logDir } from './utils/log-dir';
 import { setupTokensDir } from './utils/setup-tokens-dir';
 
 let tempDir: string;
@@ -13,7 +15,7 @@ let tempDir: string;
 const defaultConfig = () =>
   ({
     source: ['src/tokens/**/*.json'],
-    cwd: tempDir,
+    cwd: path.join(tempDir, 'dist'),
     platforms: [
       {
         name: 'web',
@@ -41,6 +43,8 @@ describe('Nephrit', () => {
   });
 
   afterEach(async () => {
+    await logDir(tempDir);
+
     await fs.rm(tempDir, { recursive: true, force: true });
   });
 

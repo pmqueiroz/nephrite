@@ -5,7 +5,7 @@ pub mod types;
 
 pub use self::resolve_transformers::resolve_transformers;
 use self::transform_tokens::transform_tokens;
-use crate::TokensBucket;
+use crate::{get_file_path, Config, TokensBucket};
 use bindings::{Dictionary, Platform, RegisteredFormats};
 use napi::bindgen_prelude::Env;
 
@@ -15,6 +15,7 @@ pub fn build<'build>(
   collection: types::TransformersCollection<'build>,
   bucket: &TokensBucket,
   formatters: &RegisteredFormats,
+  config: &Config<'build>,
 ) {
   let transformed_tokens = transform_tokens(collection, bucket, env);
 
@@ -34,6 +35,8 @@ pub fn build<'build>(
       }
     };
 
-    format_file::format_file(env, file.destination, format, &dictionary);
+    let destination = get_file_path(&config.cwd, file.destination.clone());
+
+    format_file::format_file(env, destination, format, &dictionary);
   }
 }
