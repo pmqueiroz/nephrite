@@ -1,6 +1,11 @@
 import fs from 'node:fs/promises';
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
-import { Nephrit, type NephriteConfig, NephritLogLevel, TransformKind } from '../index';
+import {
+  Nephrit,
+  type NephriteConfig,
+  NephritLogLevel,
+  TransformKind,
+} from '../index';
 import { setupTokensDir } from './utils/setup-tokens-dir';
 
 let tempDir: string;
@@ -27,7 +32,7 @@ const defaultConfig = () =>
         ],
       },
     ],
-    logLevel: NephritLogLevel.Trace
+    logLevel: NephritLogLevel.Trace,
   }) satisfies NephriteConfig;
 
 describe('Nephrit', () => {
