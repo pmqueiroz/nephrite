@@ -62,8 +62,8 @@
     "lint:toml": "taplo check",
     "lint:rs": "cargo clippy",
     "prepublishOnly": "napi prepublish -t npm --no-gh-release",
-    "test": "vitest --coverage --run",
-    "test:local": "vitest --coverage",
+    "test": "node example/build.ts",
+    "test:local": "chokidar 'example/**/*.ts' 'index.js' --initial -c 'node example/build.ts'",
     "preversion": "napi build --platform",
     "version": "napi version"
   },
@@ -83,13 +83,12 @@
     "@taplo/cli": "^0.7.0",
     "@tybys/wasm-util": "^0.10.0",
     "@types/node": "^24.10.1",
-    "@vitest/coverage-v8": "^4.0.15",
     "chalk": "^5.6.2",
+    "chokidar-cli": "^3.0.0",
     "conventional-changelog-conventionalcommits": "^7.0.2",
     "lefthook": "^2.0.8",
     "npm-run-all2": "^8.0.4",
     "semantic-release": "^23.0.0",
-    "typescript": "^5.9.2",
-    "vitest": "^4.0.15"
+    "typescript": "^5.9.2"
   }
 }

@@ -1,0 +1,9 @@
+{
+  "theme": {
+    "color": {
+      "background": {
+        "value": "{global.color.blue}"
+      }
+    }
+  }
+}

@@ -1,0 +1,10 @@
+{
+  "global": {
+    "color": {
+      "blue": {
+        "value": "#007bff",
+        "type": "color"
+      }
+    }
+  }
+}
