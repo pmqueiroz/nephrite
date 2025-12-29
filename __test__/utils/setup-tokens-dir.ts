@@ -15,15 +15,15 @@ export async function setupTokensDir() {
           color: {
             background: {
               value: '{global.color.blue}',
-            }
-          }
+            },
+          },
         },
         global: {
           color: {
             blue: {
               value: '#007bff',
               type: 'color',
-            }
+            },
           },
         },
         button: {
@@ -34,7 +34,7 @@ export async function setupTokensDir() {
               right: '9px',
               bottom: '10px',
               left: '11px',
-            }
+            },
           },
           primary: {
             background: {
