@@ -19,11 +19,7 @@ function build(cwd: string) {
         files: [
           {
             destination: 'theme.css',
-            filter: (t) => {
-              console.log({ CHEGOU_TOKEN_AI: t });
-
-              return t.filePath.includes(`/button.tokens/`);
-            },
+            filter: (t) => t.filePath.includes(`/button.tokens/`),
             format: 'css/variables',
           },
         ],
@@ -35,6 +31,7 @@ function build(cwd: string) {
   nephrit.registerFormat({
     name: 'css/variables',
     format: ({ dictionary }) => {
+      console.log(JSON.stringify(dictionary, null, 2));
       return dictionary.allTokens
         .map((token) => `--${token.original.path}: ${token.value};`)
         .join('\n');

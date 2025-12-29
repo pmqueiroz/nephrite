@@ -21,6 +21,7 @@ pub fn build<'build>(
 
   let dictionary = Dictionary {
     all_tokens: transformed_tokens,
+    tokens: bucket.get_tokens().clone(),
   };
 
   for file in platform.files {

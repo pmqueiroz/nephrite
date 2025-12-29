@@ -7,6 +7,7 @@ export interface Action {
 }
 
 export interface Dictionary {
+  tokens: any
   allTokens: Array<TransformedToken>
 }
 

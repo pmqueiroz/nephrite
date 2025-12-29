@@ -1,11 +1,14 @@
+use self::merge_tokens::merge_tokens;
 use bindings::token::ResolvedToken;
 use log::Logger;
 use std::collections::HashMap;
 
+mod merge_tokens;
 mod token_ref;
 
 pub struct TokensBucket {
-  pub tokens: HashMap<String, ResolvedToken>,
+  bucket: HashMap<String, ResolvedToken>,
+  tokens: serde_json::Value,
 }
 
 impl TokensBucket {
@@ -14,7 +17,7 @@ impl TokensBucket {
     let mut tokens_with_references = HashMap::new();
 
     Self::flatten(
-      raw_tokens,
+      raw_tokens.clone(),
       "".into(),
       &mut resolved_tokens,
       &mut tokens_with_references,
@@ -23,12 +26,13 @@ impl TokensBucket {
     Self::resolve_references(&mut resolved_tokens, &mut tokens_with_references);
 
     Self {
-      tokens: resolved_tokens,
+      bucket: resolved_tokens,
+      tokens: merge_tokens(raw_tokens),
     }
   }
 
-  pub fn print_tokens(&self) {
-    println!("Tokens: {:#?}", &self.tokens);
+  pub fn get_tokens(&self) -> &serde_json::Value {
+    &self.tokens
   }
 
   fn resolve_references(
@@ -111,19 +115,19 @@ impl TokensBucket {
   }
 
   pub fn len(&self) -> usize {
-    self.tokens.len()
+    self.bucket.len()
   }
 
   pub fn is_empty(&self) -> bool {
-    self.tokens.is_empty()
+    self.bucket.is_empty()
   }
 
   pub fn iter(&self) -> impl Iterator<Item = &ResolvedToken> {
-    self.tokens.values()
+    self.bucket.values()
   }
 
   pub fn iter_mut(&mut self) -> impl Iterator<Item = &mut ResolvedToken> {
-    self.tokens.values_mut()
+    self.bucket.values_mut()
   }
 }
 
@@ -132,7 +136,7 @@ impl IntoIterator for TokensBucket {
   type IntoIter = std::collections::hash_map::IntoIter<String, ResolvedToken>;
 
   fn into_iter(self) -> Self::IntoIter {
-    self.tokens.into_iter()
+    self.bucket.into_iter()
   }
 }
 
@@ -141,7 +145,7 @@ impl<'a> IntoIterator for &'a TokensBucket {
   type IntoIter = std::collections::hash_map::Values<'a, String, ResolvedToken>;
 
   fn into_iter(self) -> Self::IntoIter {
-    self.tokens.values()
+    self.bucket.values()
   }
 }
 
@@ -150,6 +154,6 @@ impl<'a> IntoIterator for &'a mut TokensBucket {
   type IntoIter = std::collections::hash_map::IterMut<'a, String, ResolvedToken>;
 
   fn into_iter(self) -> Self::IntoIter {
-    self.tokens.iter_mut()
+    self.bucket.iter_mut()
   }
 }
