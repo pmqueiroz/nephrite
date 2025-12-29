@@ -1,10 +1,10 @@
 {
-  "name": "@nephrite/core",
+  "name": "@nephrit/core",
   "version": "0.1.0",
   "main": "index.js",
   "repository": {
     "type": "git",
-    "url": "git+ssh://git@github.com/pmqueiroz/nephrite.git"
+    "url": "git+ssh://git@github.com/pmqueiroz/nephrit.git"
   },
   "license": "MIT",
   "browser": "browser.js",

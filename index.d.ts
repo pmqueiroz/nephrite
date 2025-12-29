@@ -75,7 +75,7 @@ export declare const enum TransformKind {
   Attribute = 'Attribute',
   Value = 'Value'
 }
-export declare class Nephrite {
+export declare class Nephrit {
   constructor(config: NephriteConfig)
   getConfig(): NephriteConfig
   buildPlatform(platformName: string): void

@@ -1,7 +1,7 @@
-import { Nephrite } from '@nephrite/core';
+import { Nephrit } from '@nephrit/core';
 
 
-const nephrite = new Nephrite({
+const nephrit = new Nephrit({
   source: ['src/tokens/**/*.json'],
   platforms: {
     web: {
@@ -17,7 +17,7 @@ const nephrite = new Nephrite({
   }
 })
 
-nephrite.registerTransform({
+nephrit.registerTransform({
   name: 'margin/css/shorthand',
   type: 'value',
   filter: ({ $type }) => $type === 'margin',
@@ -40,14 +40,14 @@ nephrite.registerTransform({
   }
 })
 
-nephrite.registerTransformGroup({
+nephrit.registerTransformGroup({
   name: 'web',
   transforms: [
     'margin/css/shorthand',
   ]
 })
 
-nephrite.registerParser({
+nephrit.registerParser({
   name: 'json',
   pattern: /\.json$/,
   transforms: [
@@ -55,12 +55,12 @@ nephrite.registerParser({
   ]
 })
 
-nephrite.registerAction({
+nephrit.registerAction({
   name: 'hello-word',
   do: () => {
-    console.log('Hello, Nephrite!');
+    console.log('Hello, Nephrit!');
   },
   undo: () => {
-    console.log('Goodbye, Nephrite!');
+    console.log('Goodbye, Nephrit!');
   }
 })

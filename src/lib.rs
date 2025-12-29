@@ -10,7 +10,7 @@ use napi_derive::napi;
 use std::collections::HashMap;
 
 #[napi]
-pub struct Nephrite<'env> {
+pub struct Nephrit<'env> {
   config: NephriteConfig<'env>,
   transforms: RegisteredTransforms,
   transform_groups: TransformGroups,
@@ -29,7 +29,7 @@ pub struct NephriteConfig<'platform> {
 }
 
 #[napi]
-impl<'env> Nephrite<'env> {
+impl<'env> Nephrit<'env> {
   #[napi(constructor)]
   pub fn new(config: NephriteConfig<'env>) -> Self {
     Logger::init();

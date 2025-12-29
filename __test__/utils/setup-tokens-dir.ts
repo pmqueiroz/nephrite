@@ -4,7 +4,7 @@ import path from 'node:path';
 
 export async function setupTokensDir() {
   const ostmpdir = os.tmpdir();
-  const tmpdir = path.join(ostmpdir, 'nephrite-test-');
+  const tmpdir = path.join(ostmpdir, 'nephrit-test-');
   const folderPath = await fs.mkdtemp(tmpdir);
   await fs.mkdir(path.join(folderPath, 'src', 'tokens'), { recursive: true });
   await fs.writeFile(

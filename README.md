@@ -1,11 +1,11 @@
 
 <p align="center">
-  <img src=".github/logo.svg" width="150" alt="Nephrite logo" />
+  <img src=".github/logo.svg" width="150" alt="Nephrit logo" />
 </p>
 
-<h1 align="center">Nephrite</h1>
+<h1 align="center">Nephrit</h1>
 
-**Nephrite** is a Rust-based alternative to Style Dictionary, focused on performance.
+**Nephrit** is a Rust-based alternative to Style Dictionary, focused on performance.
 
 Built with **Rust** and exposed to JavaScript via **napi-rs**.
 

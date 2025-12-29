@@ -2,7 +2,7 @@
 edition    = "2021"
 license    = "MIT"
 name       = "bindings"
-repository = "https://github.com/pmqueiroz/nephrite.git"
+repository = "https://github.com/pmqueiroz/nephrit.git"
 version    = "0.1.0"
 
 [dependencies]

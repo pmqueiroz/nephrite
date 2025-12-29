@@ -1,6 +1,6 @@
 import fs from 'node:fs/promises';
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
-import { Nephrite, type NephriteConfig, TransformKind } from '../index';
+import { Nephrit, type NephriteConfig, TransformKind } from '../index';
 import { setupTokensDir } from './utils/setup-tokens-dir';
 
 let tempDir: string;
@@ -29,7 +29,7 @@ const defaultConfig = () =>
     ],
   }) satisfies NephriteConfig;
 
-describe('Nephrite', () => {
+describe('Nephrit', () => {
   beforeEach(async () => {
     tempDir = await setupTokensDir();
   });
@@ -40,13 +40,13 @@ describe('Nephrite', () => {
 
   describe('build', () => {
     it('should be a function', () => {
-      expect(Nephrite.prototype.buildAll).toBeInstanceOf(Function);
+      expect(Nephrit.prototype.buildAll).toBeInstanceOf(Function);
     });
 
     it('should [wip]', async () => {
-      const nephrite = new Nephrite(defaultConfig());
+      const nephrit = new Nephrit(defaultConfig());
 
-      nephrite.registerFormat({
+      nephrit.registerFormat({
         name: 'css/variables',
         format: ({ dictionary }) => {
           return dictionary.allTokens
@@ -55,7 +55,7 @@ describe('Nephrite', () => {
         },
       });
 
-      nephrite.registerTransform({
+      nephrit.registerTransform({
         name: 'margin/css/shorthand',
         kind: TransformKind.Value,
         filter: (token) => {
@@ -97,12 +97,12 @@ describe('Nephrite', () => {
         },
       });
 
-      nephrite.registerTransformGroup({
+      nephrit.registerTransformGroup({
         name: 'web-group',
         transforms: ['margin/css/shorthand'],
       });
 
-      nephrite.registerParser({
+      nephrit.registerParser({
         name: 'json',
         pattern: '*.json',
         parser: ({ content }) => {
@@ -110,17 +110,17 @@ describe('Nephrite', () => {
         },
       });
 
-      nephrite.registerAction({
+      nephrit.registerAction({
         name: 'hello-word',
         do: () => {
-          console.log('Hello, Nephrite!');
+          console.log('Hello, Nephrit!');
         },
         undo: () => {
-          console.log('Goodbye, Nephrite!');
+          console.log('Goodbye, Nephrit!');
         },
       });
 
-      nephrite.buildAll();
+      nephrit.buildAll();
     });
   });
 });
