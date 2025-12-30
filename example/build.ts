@@ -40,11 +40,7 @@ function build() {
     name: 'css/variables',
     kind: TransformKind.Name,
     filter: () => true,
-    transform: (token) => {
-      const { name } = token;
-
-      console.log(JSON.stringify(token, null, 2));
-
+    transform: ({ name }) => {
       return `--${name}`;
     },
   });
