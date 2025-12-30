@@ -49,9 +49,7 @@ function build() {
     name: 'margin/css/shorthand',
     kind: TransformKind.Value,
     filter: (token) => {
-      // check why the actual token value is in snake case
-      // @ts-expect-error
-      return token.original.original_value.type === 'margin';
+      return token.original.originalValue.type === 'margin';
     },
     transform: ({ original: { value } }) => {
       const formatMargin = ({

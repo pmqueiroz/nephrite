@@ -1,22 +1,22 @@
 use napi::bindgen_prelude::*;
 use napi_derive::napi;
 
+use crate::token::TransformedToken;
+
 #[napi(object)]
 #[derive(Clone)]
 pub struct Transform {
   pub name: String,
   pub kind: TransformKind,
-  #[napi(ts_type = "(token: TransformedToken) => boolean")]
-  pub filter: Function<'static, serde_json::Value, bool>,
-  #[napi(ts_type = "(token: TransformedToken) => string")]
-  pub transform: Function<'static, serde_json::Value, String>,
+  pub filter: Function<'static, TransformedToken, bool>,
+  pub transform: Function<'static, TransformedToken, String>,
 }
 
 pub struct RegisteredTransform {
   pub name: String,
   pub kind: TransformKind,
-  pub filter: FunctionRef<serde_json::Value, bool>,
-  pub transform: FunctionRef<serde_json::Value, String>,
+  pub filter: FunctionRef<TransformedToken, bool>,
+  pub transform: FunctionRef<TransformedToken, String>,
 }
 
 #[napi(string_enum)]

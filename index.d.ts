@@ -59,8 +59,8 @@ export interface TokenFile {
 export interface Transform {
   name: string
   kind: TransformKind
-  filter: (token: TransformedToken) => boolean
-  transform: (token: TransformedToken) => string
+  filter: (arg: TransformedToken) => boolean
+  transform: (arg: TransformedToken) => string
 }
 
 export interface TransformedToken {
