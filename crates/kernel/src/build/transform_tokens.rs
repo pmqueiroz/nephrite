@@ -22,7 +22,7 @@ pub fn transform_tokens<'transforms>(
           None => TransformedToken::from_resolved_token(token),
         };
 
-        let token_json = serde_json::to_value(token_ref).unwrap_or(serde_json::Value::Null);
+        let token_json = serde_json::to_value(&token_ref).unwrap_or(serde_json::Value::Null);
         let bool_result = filter_func.call(token_json.clone());
         if let Ok(boolean) = bool_result {
           if boolean {
@@ -34,7 +34,7 @@ pub fn transform_tokens<'transforms>(
               let transformed_result = transform_func.call(token_json);
               match transformed_result {
                 Ok(transformed_code) => {
-                  let mut transformed_token = TransformedToken::from_resolved_token(token);
+                  let mut transformed_token = token_ref.clone();
 
                   match transformer.kind {
                     bindings::transform::TransformKind::Attribute => {
