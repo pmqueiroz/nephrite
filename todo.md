@@ -1,8 +1,5 @@
 ## Internal transformers
 
-- [ ] asset/flutter/literal
-- [ ] asset/objC/literal
-- [ ] asset/swift/literal
 - [ ] asset/url
 - [ ] attribute/color
 - [ ] attribute/cti
@@ -23,7 +20,7 @@
 - [ ] html/icon
 - [ ] name/camel
 - [ ] name/human
-- [ ] name/kebab
+- [x] name/kebab
 - [ ] name/pascal
 - [ ] name/snake
 - [ ] shadow/css/shorthand

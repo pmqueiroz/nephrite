@@ -7,6 +7,7 @@ version    = "0.1.0"
 
 [dependencies]
 bindings    = { path = "../bindings" }
+builtin     = { path = "../builtin" }
 glob        = "0.3.3"
 log         = { path = "../log" }
 napi        = "3.0.0"
