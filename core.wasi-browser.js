@@ -58,4 +58,5 @@ const {
 export default __napiModule.exports
 export const TransformKind = __napiModule.exports.TransformKind
 export const Nephrit = __napiModule.exports.Nephrit
+export const JsNephrit = __napiModule.exports.JsNephrit
 export const NephritLogLevel = __napiModule.exports.NephritLogLevel
