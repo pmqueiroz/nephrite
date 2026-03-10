@@ -1,19 +1,19 @@
 #![deny(clippy::all)]
 mod log_level;
 use bindings::{
-  action, parser, platform, transform, Actions, Format, Parsers, Platforms, RegisteredFormat,
-  RegisteredFormats, RegisteredTransforms, TransformGroups,
+  action, parser, platform, token::TransformedToken, transform, Actions, Format, Parsers,
+  Platforms, RegisteredFormat, RegisteredFormats, RegisteredTransforms, TransformGroups,
 };
-use kernel::{get_tokens_files, get_tokens_files_paths, Config, TokensBucket};
+use kernel::{get_tokens_files, get_tokens_files_paths, nephrit, Config, TokensBucket};
 use log::Logger;
 use log_level::NephritLogLevel;
 use napi::bindgen_prelude::Env;
 use napi_derive::napi;
 use std::collections::HashMap;
 
-#[napi]
-pub struct Nephrit<'env> {
-  config: Config<'env>,
+#[napi(js_name = "Nephrit")]
+pub struct JsNephrit<'env> {
+  nephrit: nephrit::Nephrit<'env>,
   transforms: RegisteredTransforms,
   transform_groups: TransformGroups,
   parsers: Parsers,
@@ -32,7 +32,7 @@ pub struct NephriteConfig<'platform> {
 }
 
 #[napi]
-impl<'env> Nephrit<'env> {
+impl<'env> JsNephrit<'env> {
   #[napi(constructor)]
   pub fn new(config: NephriteConfig<'env>) -> Self {
     Logger::init(NephritLogLevel::to_logger_log_level(
@@ -46,11 +46,11 @@ impl<'env> Nephrit<'env> {
     }
 
     Self {
-      config: Config {
-        source: config.source,
-        cwd: config.cwd.map(std::path::PathBuf::from),
-        platforms: config.platforms,
-      },
+      nephrit: nephrit::Nephrit::new(Config {
+        source: config.source.clone(),
+        cwd: config.cwd.as_ref().map(|p| std::path::PathBuf::from(p)),
+        platforms: config.platforms.clone(),
+      }),
       transforms: HashMap::new(),
       transform_groups: HashMap::new(),
       parsers: Vec::new(),
@@ -113,19 +113,22 @@ impl<'env> Nephrit<'env> {
       collection,
       tokens_bucket,
       &self.formats,
-      &self.config,
+      &self.nephrit.get_config(),
     );
+    // self
+    //   .nephrit
+    //   .build(self.transforms.keys().nth(0).unwrap().to_string());
   }
 
   #[napi]
-  pub fn register_transform(&mut self, transform: transform::Transform) {
+  pub fn register_transform(&mut self, transform: transform::Transform, env: Env) {
     let name = transform.name.clone();
     self.transforms.insert(
       transform.name.clone(),
       transform::RegisteredTransform {
         name: transform.name.clone(),
         kind: transform.kind.clone(),
-        transform: match transform.transform.create_ref() {
+        transform: match transform.clone().transform.create_ref() {
           Ok(transform) => transform,
           Err(e) => {
             Logger::error(&format!(
@@ -147,6 +150,17 @@ impl<'env> Nephrit<'env> {
         },
       },
     );
+
+    // let transform_for_closure = transform.clone();
+    // self.nephrit.register_transform(
+    //   transform.name.clone(),
+    //   kernel::nephrit::InternalTransformer {
+    //     name: transform.name.clone(),
+    //     get_transformer: Box::new(move || {
+    //       return func_ref.borrow_back(env);
+    //     }),
+    //   },
+    // );
 
     Logger::debug(&format!("Registered transform: {}", name));
   }
@@ -214,12 +228,12 @@ impl<'env> Nephrit<'env> {
   }
 
   fn fetch_tokens_files(&self) -> Vec<bindings::parser::TokenFile> {
-    let cwd = match &self.config.cwd {
+    let cwd = match &self.nephrit.get_config().cwd {
       Some(path) => std::path::PathBuf::from(path),
       None => std::env::current_dir().unwrap(),
     };
 
-    let path = get_tokens_files_paths(&cwd, self.config.source.clone());
+    let path = get_tokens_files_paths(&cwd, self.nephrit.get_config().source.clone());
     get_tokens_files(path)
   }
 }

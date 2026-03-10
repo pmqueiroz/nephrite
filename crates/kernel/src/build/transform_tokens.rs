@@ -19,7 +19,7 @@ pub fn transform_tokens<'transforms>(
       if let Ok(filter_func) = transformer.filter.borrow_back(env) {
         let token_ref = match transformed_tokens.get(&token.key) {
           Some(t) => t.clone(),
-          None => TransformedToken::from_resolved_token(token),
+          None => token.into(),
         };
 
         let bool_result = filter_func.call(token_ref.clone());

@@ -18,6 +18,38 @@ pub struct ResolvedToken {
   pub file_path: String,
 }
 
+impl ResolvedToken {
+  fn to_transformed_token(&self) -> TransformedToken {
+    let formatted_value = match &self.value {
+      serde_json::Value::String(s) => s.clone(),
+      _ => self.value.to_string(),
+    };
+
+    TransformedToken {
+      key: self.key.clone(),
+      value: formatted_value,
+      file_path: self.file_path.clone(),
+      is_source: true,
+      original: self.original_value.clone(),
+      name: self.name.clone(),
+      attributes: TokenAttrs::from_path(&self.path),
+      path: self.path.clone(),
+    }
+  }
+}
+
+impl Into<TransformedToken> for ResolvedToken {
+  fn into(self) -> TransformedToken {
+    self.to_transformed_token()
+  }
+}
+
+impl From<&ResolvedToken> for TransformedToken {
+  fn from(resolved_token: &ResolvedToken) -> Self {
+    resolved_token.to_transformed_token()
+  }
+}
+
 #[napi(object)]
 #[derive(Debug, Clone, serde::Serialize)]
 pub struct TokenAttrs {
@@ -53,24 +85,4 @@ pub struct TransformedToken {
   pub name: String,
   pub attributes: TokenAttrs,
   pub path: Vec<String>,
-}
-
-impl TransformedToken {
-  pub fn from_resolved_token(resolved_token: &ResolvedToken) -> Self {
-    let formatted_value = match &resolved_token.value {
-      serde_json::Value::String(s) => s.clone(),
-      _ => resolved_token.value.to_string(),
-    };
-
-    Self {
-      key: resolved_token.key.clone(),
-      value: formatted_value,
-      file_path: resolved_token.file_path.clone(),
-      is_source: true,
-      original: resolved_token.original_value.clone(),
-      name: resolved_token.name.clone(),
-      attributes: TokenAttrs::from_path(&resolved_token.path),
-      path: resolved_token.path.clone(),
-    }
-  }
 }

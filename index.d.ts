@@ -94,6 +94,7 @@ export declare class Nephrit {
   registerAction(action: Action): void
   registerFormat(format: Format): void
 }
+export type JsNephrit = Nephrit
 
 export interface NephriteConfig {
   source: Array<string>

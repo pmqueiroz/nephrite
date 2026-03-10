@@ -574,4 +574,5 @@ if (!nativeBinding) {
 module.exports = nativeBinding
 module.exports.TransformKind = nativeBinding.TransformKind
 module.exports.Nephrit = nativeBinding.Nephrit
+module.exports.JsNephrit = nativeBinding.JsNephrit
 module.exports.NephritLogLevel = nativeBinding.NephritLogLevel

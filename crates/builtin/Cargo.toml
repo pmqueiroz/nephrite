@@ -1,0 +1,10 @@
+[package]
+edition    = "2021"
+license    = "MIT"
+name       = "builtin"
+repository = "https://github.com/pmqueiroz/nephrit.git"
+version    = "0.1.0"
+
+[dependencies]
+bindings = { path = "../bindings" }
+log      = { path = "../log" }
