@@ -8,12 +8,6 @@ pub struct TokenFile {
   pub content: String,
 }
 
-#[derive(Clone, Debug)]
-pub struct ParsedFile {
-  pub path: String,
-  pub content: serde_json::Value,
-}
-
 #[napi(object)]
 #[derive(Clone)]
 pub struct Parser<'parser> {

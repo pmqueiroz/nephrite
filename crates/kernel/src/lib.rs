@@ -1,10 +1,9 @@
-extern crate bindings;
 extern crate builtin;
 extern crate log;
 extern crate napi;
 extern crate rayon;
 extern crate utils;
-use bindings::parser::ParsedFile;
+use interfaces::parser::ParsedFile;
 use napi::bindgen_prelude::Env;
 
 use rayon::prelude::{IntoParallelRefIterator, ParallelIterator};
@@ -80,6 +79,7 @@ mod bucket;
 mod build;
 mod config;
 mod helpers;
+mod interfaces;
 pub mod nephrit;
 
 pub use bucket::TokensBucket;
